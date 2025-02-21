@@ -13,8 +13,10 @@ env:
   RELEASE: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip')}}
 
 jobs:
-  simple_deployment_pipeline:
+  deployment_pipeline:
     runs-on: ubuntu-20.04
+    outputs:
+      release: ${{ env.RELEASE }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,8 +38,9 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
   tag_release:
-    if: ${{ github.env.RELEASE == 'true' }}
-    needs: [simple_deployment_pipeline] # Make sure pipeline finishes its run first
+    # Make sure pipeline finishes its run first
+    needs: [deployment_pipeline]
+    if: ${{ needs.deployment_pipeline.outputs.release == 'true' }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
