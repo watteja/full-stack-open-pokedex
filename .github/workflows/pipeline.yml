@@ -74,14 +74,20 @@ jobs:
       #       commit: ${{ github.event.head_commit.url }} by
       #       ${{ github.event.head_commit.author.username }} broke the build :(
       #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Deployment success 1
-        uses: rjstone/discord-webhook-notify@v1
-        if: ${{ env.RELEASE == 'true' && success() }}
+      # - name: Deployment success 1
+      #   uses: rjstone/discord-webhook-notify@v1
+      #   if: ${{ env.RELEASE == 'true' && success() }}
+      #   with:
+      #     severity: info
+      #     text: Build succeeded
+      #     description: A new version of Pokedex deployed
+      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Deployment success 3
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@08d9328877d6954120eef2b07abbc79249bb6210
         with:
-          severity: info
-          text: Build succeeded
-          description: A new version of Pokedex deployed
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          args: 'A new version of Pokedex deployed'
       - name: Deployment success 2
         uses: Retr0-01/better-discord-notification@main
         if: ${{ env.RELEASE == 'true' && success() }}
@@ -90,9 +96,3 @@ jobs:
           msg-content: 'A new version of Pokedex deployed'
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           ignore-hidden: 'false'
-      - name: Deployment success 3
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@08d9328877d6954120eef2b07abbc79249bb6210
-        with:
-          args: 'A new version of Pokedex deployed'
